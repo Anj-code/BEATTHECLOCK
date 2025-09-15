@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Guess the Movie Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quiz-header {
+            margin-bottom: 30px;
+        }
+
+        .quiz-title {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .question-container {
+            margin: 30px 0;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .emoji-display {
+            font-size: 4em;
+            margin: 20px 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-container {
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .answer-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .correct {
+            color: #27ae60;
+            animation: bounce 0.5s ease;
+        }
+
+        .wrong {
+            color: #e74c3c;
+        }
+
+        .event-promotion {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 25px rgba(238, 90, 36, 0.3);
+        }
+
+        .event-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .event-details {
+            font-size: 1.1em;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .register-btn {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            color: #333;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(254, 202, 87, 0.4);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(254, 202, 87, 0.5);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 6px;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .emoji-display {
+                font-size: 3em;
+            }
+            
+            .quiz-title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">🎬 Movie Quiz</h1>
+            <p class="quiz-subtitle">Can you guess these movies from emojis?</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div id="quizContent">
+            <div class="question-container">
+                <div class="question-number" id="questionNumber">Question 1 of 3</div>
+                <div class="emoji-display" id="emojiDisplay">🦁👑</div>
+                <div class="input-container">
+                    <input type="text" id="answerInput" class="answer-input" placeholder="Enter your answer..." autocomplete="off">
+                </div>
+                <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Submit Answer</button>
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+
+        <div id="eventPromotion" class="event-promotion hidden">
+            <div class="event-title">🎯 Want to play more?</div>
+            <div class="event-details">
+                Join us for <strong>BEAT THE CLOCK</strong><br>
+                📅 20th September at 10:00 AM<br>
+                📍 AB1 Auditorium 1<br>
+                💰 Register for just ₹50 per person
+            </div>
+            <a href="#" class="register-btn" id="registerBtn">🎟️ Register Now</a>
+        </div>
+    </div>
+
+    <script>
+        // Multiple sets of movie questions
+        const allQuestions = [
+            { emoji: "🦁👑", answer: "the lion king", display: "🦁👑" },
+            { emoji: "🕷️👨‍💼", answer: "spider man", display: "🕷️👨‍💼" },
+            { emoji: "❄️👸", answer: "frozen", display: "❄️👸" },
+            { emoji: "🚢💎❤️", answer: "titanic", display: "🚢💎❤️" },
+            { emoji: "🦇🌃👨", answer: "batman", display: "🦇🌃👨" },
+            { emoji: "🏰👸🐸", answer: "princess and the frog", display: "🏰👸🐸" },
+            { emoji: "🐟🔍", answer: "finding nemo", display: "🐟🔍" },
+            { emoji: "👻🏠", answer: "casper", display: "👻🏠" },
+            { emoji: "🌪️🏠🐕", answer: "the wizard of oz", display: "🌪️🏠🐕" },
+            { emoji: "🍫🏭", answer: "charlie and the chocolate factory", display: "🍫🏭" },
+            { emoji: "🐘🎪", answer: "dumbo", display: "🐘🎪" },
+            { emoji: "🤖🚗", answer: "transformers", display: "🤖🚗" },
+            { emoji: "🦈🌊", answer: "jaws", display: "🦈🌊" },
+            { emoji: "👑💍🏔️", answer: "lord of the rings", display: "👑💍🏔️" },
+            { emoji: "🐵🍌🏔️", answer: "king kong", display: "🐵🍌🏔️" }
+        ];
+
+        // Function to shuffle array
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Select 3 random questions for each quiz session
+        const questions = shuffleArray(allQuestions).slice(0, 3);
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function displayQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+                document.getElementById('emojiDisplay').textContent = questions[currentQuestion].display;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('feedback').textContent = '';
+                document.getElementById('answerInput').focus();
+                updateProgress();
+            }
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, ' ');
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value;
+            const correctAnswer = questions[currentQuestion].answer;
+            const feedback = document.getElementById('feedback');
+
+            if (normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer)) {
+                feedback.textContent = '🎉 Well Done!';
+                feedback.className = 'feedback correct';
+                correctAnswers++;
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        displayQuestion();
+                    } else {
+                        showEventPromotion();
+                    }
+                }, 1500);
+            } else {
+                feedback.textContent = `❌ Wrong answer! The correct answer was: ${questions[currentQuestion].answer}`;
+                feedback.className = 'feedback wrong';
+                
+                setTimeout(() => {
+                    showEventPromotion();
+                }, 2000);
+            }
+        }
+
+        function showEventPromotion() {
+            document.getElementById('quizContent').classList.add('hidden');
+            document.getElementById('eventPromotion').classList.remove('hidden');
+            updateProgress();
+            document.getElementById('progressFill').style.width = '100%';
+        }
+
+        // Allow Enter key to submit answer
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Set registration link (replace with your actual registration form URL)
+        document.getElementById('registerBtn').href = 'https://forms.google.com/your-registration-form-link';
+
+        // Initialize the quiz
+        displayQuestion();
+    </script>
+</body>
+</html>
